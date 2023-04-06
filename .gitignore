@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 # my ignores
-source
+images/new/*
+images/decoded/*
+credentials.yaml
+resources/*
