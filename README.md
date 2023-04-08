@@ -12,11 +12,12 @@ The script is specifically designed for the website <a href="https://00emisiones
 pip install -r requirements.txt
 ```
 
-### Pytesseract
-This script requires `pytesseract` for OCR. You can install it using pip:
+### Pytesseract and PaddleOCR
+This script requires both `pytesseract` and `PaddleOCR` for OCR. You can install them using pip:
 
 ```
-pip install pytesseract
+pip install pytesseract paddlepaddle paddleocr
+
 ```
 ### Selenium Drivers
 This script uses Selenium for browser automation. You need to download the appropriate driver for your browser and operating system. Here are the links for some common browsers:

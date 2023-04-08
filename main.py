@@ -7,6 +7,9 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 import time
 import yaml
+import paddleocr
+from paddleocr import PaddleOCR
+
 
 # set up the input and output directories
 input_dir = 'images/new'
@@ -24,6 +27,9 @@ password = credentials["password"]
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
 
+ocr = PaddleOCR()
+
+
 # loop through all the images in the input directory
 for filename in os.listdir(input_dir):
 
@@ -32,11 +38,44 @@ for filename in os.listdir(input_dir):
         # read the image with OpenCV
         img = cv2.imread(os.path.join(input_dir, filename))
 
+        # convert the image to RGB
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        # resize the image
+        img_resized = cv2.resize(img_rgb, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
+
+        # create a ROI from the image
+        x, y, w, h = cv2.selectROI(img_resized)
+
+        # resize coordinates to match the original image
+        x *= 2
+        y *= 2
+        w *= 2
+        h *= 2
+
+        # crop the image based on the ROI coordinates
+        img_rgb = img_rgb[y:y+h, x:x+w]
+
         text = pytesseract.image_to_string(img_rgb)
 
         # search for all occurrences of 8 uppercase letters and/or digits
         matches = re.findall(r'\b[A-Z0-9]{8}\b', text)
+
+        if not matches:
+
+            # recognize text in the image using PaddleOCR
+            result = ocr.ocr(img_rgb)
+
+            # extract the recognized text from the result
+            text = ''
+            for line in result:
+                for word in line:
+                    text += str(word[1])
+                text += '\n'
+
+            # search for all occurrences of 8 uppercase letters and/or digits
+            matches = re.findall(r'\b[A-Z0-9]{8}\b', text)
+
 
         if matches:
             # select the last match
@@ -98,6 +137,8 @@ for filename in os.listdir(input_dir):
             # locate the button element by its CSS selector
             driver.find_element(By.CSS_SELECTOR,'button[type="submit"]').click()
 
+            # Wait for the page to load
+            time.sleep(1)
 
             # Close the browser window
             driver.quit()
@@ -113,7 +154,4 @@ for filename in os.listdir(input_dir):
     
 
 
-while(True):
-    time.sleep(10)
-    pass
 
