@@ -1,4 +1,3 @@
-import pytesseract
 import cv2
 import re
 import os
@@ -56,25 +55,18 @@ for filename in os.listdir(input_dir):
         # crop the image based on the ROI coordinates
         img_rgb = img_rgb[y:y+h, x:x+w]
 
-        text = pytesseract.image_to_string(img_rgb)
+        # recognize text in the image using PaddleOCR
+        result = ocr.ocr(img_rgb)
+
+        # extract the recognized text from the result
+        text = ''
+        for line in result:
+            for word in line:
+                text += str(word[1])
+            text += '\n'
 
         # search for all occurrences of 8 uppercase letters and/or digits
         matches = re.findall(r'\b[A-Z0-9]{8}\b', text)
-
-        if not matches:
-
-            # recognize text in the image using PaddleOCR
-            result = ocr.ocr(img_rgb)
-
-            # extract the recognized text from the result
-            text = ''
-            for line in result:
-                for word in line:
-                    text += str(word[1])
-                text += '\n'
-
-            # search for all occurrences of 8 uppercase letters and/or digits
-            matches = re.findall(r'\b[A-Z0-9]{8}\b', text)
 
 
         if matches:
