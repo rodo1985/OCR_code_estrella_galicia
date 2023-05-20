@@ -22,6 +22,8 @@ with open("credentials.yaml", "r") as file:
 username = credentials["username"]
 password = credentials["password"]
 
+sleep_time = 2
+
 # make sure the output directory exists
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
@@ -84,19 +86,19 @@ for filename in os.listdir(input_dir):
             driver.get('https://00emisiones.estrellagalicia00.es/customer/pincode')
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             # Submit the form to log in
             driver.find_element(By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll").click()
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             # locate the element by its CSS selector
             driver.find_element(By.CSS_SELECTOR, "a.nav-link.link-light.text-uppercase.gigya-login-screen").click()
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             # locate the element by its name attribute
             driver.find_element(By.NAME, "username").send_keys(username)
@@ -106,31 +108,37 @@ for filename in os.listdir(input_dir):
             submit_button = driver.find_element(By.CSS_SELECTOR, "input.gigya-input-submit").click()
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
+
+            # Navigate to the web page you want to automate
+            driver.get('https://00emisiones.estrellagalicia00.es/customer/pincode')
+
+            # Wait for the page to load
+            time.sleep(sleep_time)
 
             # locate the element by its name attribute
             driver.find_element(By.ID, "pincode").send_keys(code)
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             # locate the element by its name attribute
             driver.find_element(By.ID, "zip").send_keys('08205')
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             select_fr = Select(driver.find_element(By.ID, "store"))
             select_fr.select_by_index(19)
             
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             # locate the button element by its CSS selector
             driver.find_element(By.CSS_SELECTOR,'button[type="submit"]').click()
 
             # Wait for the page to load
-            time.sleep(1)
+            time.sleep(sleep_time)
 
             # Close the browser window
             driver.quit()
